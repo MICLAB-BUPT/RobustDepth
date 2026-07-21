@@ -187,20 +187,4 @@ uamtd_release/
 └── README.md
 ```
 
-## License & Acknowledgement
 
-Released under **CC BY-NC-SA 4.0**, the same license as
-[md4all](https://github.com/...). This code adapts the md4all (ICCV 2023) framework; please
-also cite md4all when you use this repository. The RADIATE track reuses novel radar modules
-originally developed within the Lite-Mono framework.
-
-## Citation
-
-```bibtex
-@article{bi2025uamtd,
-  title     = {Boosting Robustness for All-Weather Self-Supervised Depth Estimation in Autonomous Driving},
-  author    = {Bi, Xiaoyang and others},
-  journal   = {IEEE Transactions on Image Processing},
-  year      = {2025}
-}
-```
