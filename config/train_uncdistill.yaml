@@ -1,0 +1,33 @@
+EXPERIMENT_NAME: 'train-baseline-all-unc-distll'
+
+SAVE:
+  TOP_K: -1
+DATASET:
+  DATAROOT: '../nuscenes'
+  LOAD:
+    GT:
+      POSE: False
+  # WEATHER:
+    # TRAIN: 
+    #   - day-clear
+    #   - day-rain
+    #   - night-rain
+      # - night-clear
+  # VERSION: 'mini'
+TRAINING:
+  BATCH_SIZE: 16
+  SELF_DISTILL: True
+  # REPEAT: 1
+  # EPOCHS: 40
+LOAD:
+  DAYTIME_TRANSLATION_TEACHER_PATH: 'log/checkpoints/md2_nuscenes.ckpt'
+  DAYTIME_TRANSLATION_TEACHER_PATHS:
+    - 'log/checkpoints/selfdistill-night.ckpt'
+    - 'log/checkpoints/selfdistill-rain.ckpt'
+LOSS:
+  SUPERVISED:
+    WEIGHT: 1.0
+    METHOD: 'unc_sim'
+  VELOCITY_WEIGHT: 0.0
+SYSTEM:
+  NUM_WORKERS: 8 #TODO add noise

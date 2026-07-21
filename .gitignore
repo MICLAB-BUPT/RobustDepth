@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Training artifacts (never commit)
+log/
+results/
+*.log
+nohup.out
+*.ckpt
+*.swp
+*.swo
+
+# Datasets (mount/symlink outside the repo)
+../nuscenes/
+../nuscenes_resize/
+../nuScenes_translated/
+../robotcar/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

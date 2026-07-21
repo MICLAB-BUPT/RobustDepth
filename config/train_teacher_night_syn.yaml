@@ -1,0 +1,45 @@
+EXPERIMENT_NAME: 'train-teacher-night-syn'
+
+SAVE:
+  TOP_K: -1
+
+DATASET:
+  DATAROOT: '../nuscenes'
+  LOAD:
+    GT:
+      POSE: False
+  WEATHER:
+    TRAIN:
+      - day-clear      # source for day->night translation (synthetic night anchors)
+      - night-clear    # real night
+      - night-rain     # real night
+  AUGMENTATION:
+    GAUSSIAN_NOISE:
+      PROBABILITY: 0.5
+    NORMALIZE:
+      MODE: 'Daytime'
+    DAY_NIGHT_TRANSLATION:
+      PROBABILITY: 0.5
+
+TRAINING:
+  BATCH_SIZE: 16
+  SELF_DISTILL: True   # freeze pose network (depth student only)
+
+LOAD:
+  # Warm-start the depth/pose from md4allDD (strong adverse prior absorbed from synthetic data)
+  INIT_CHECKPOINT_PATH: 'log/checkpoints/md4allDDa_nuscenes.ckpt'
+  # Pseudo-label provider = md4allDD: reliable on the clear source of synthetic night AND
+  # strong on REAL night, giving the student a strong night anchor (clear_teacher fails on night).
+  # Matches the original self-distill convention (teacher == init model).
+  DAYTIME_TRANSLATION_TEACHER_PATH: 'log/checkpoints/md4allDDa_nuscenes.ckpt'
+  DAY_NIGHT_TRANSLATION_PATH: '../nuScenes_translated/night'
+
+LOSS:
+  SUPERVISED:
+    WEIGHT: 1.0
+    METHOD: 'unc_sim'
+    TEACHER_NUM: 1     # single-teacher expert training with uncertainty
+  VELOCITY_WEIGHT: 0.0
+
+SYSTEM:
+  NUM_WORKERS: 8

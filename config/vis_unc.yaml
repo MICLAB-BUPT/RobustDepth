@@ -1,0 +1,33 @@
+EXPERIMENT_NAME: 'vis_unc_test'
+
+SYSTEM:
+  BENCHMARK: False
+
+LOAD:
+  # CHECKPOINT_PATH: 'log/checkpoints/clear_teacher_nuscenes.ckpt'
+  CHECKPOINT_PATH: 'log/checkpoints/train-baseline-all-unc-distll/train-baseline-all-unc-distll-epoch=11.ckpt'
+  DAYTIME_TRANSLATION_TEACHER_PATH: 'log/checkpoints/clear_teacher_nuscenes.ckpt'
+  DAYTIME_TRANSLATION_TEACHER_PATHS:
+    - 'log/checkpoints/selfdistill-night.ckpt'
+    - 'log/checkpoints/selfdistill-rain.ckpt'
+
+DATASET:
+  DATAROOT: '../nuscenes'
+  # VERSION: 'mini'
+
+EVALUATION:
+  BATCH_SIZE: 1
+  SAVE:
+    QUANTITATIVE_RES_PATH: 'results/quantitative/nuscenes/val'
+    QUALITATIVE_RES_PATH:  'results/unc_vis/'
+  UNC:
+    VIS_UNC: True
+
+TRAINING:
+  BATCH_SIZE: 16
+  SELF_DISTILL: True
+
+LOSS:
+  SUPERVISED:
+    WEIGHT: 1.0
+    METHOD: 'mysim'

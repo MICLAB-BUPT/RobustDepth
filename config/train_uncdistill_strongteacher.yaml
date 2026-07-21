@@ -1,0 +1,33 @@
+EXPERIMENT_NAME: 'train-unc-distll-strongteacher'
+
+SAVE:
+  TOP_K: -1
+DATASET:
+  DATAROOT: '../nuscenes'  # nuScenes raw data (symlink ../nuscenes to your dataset); student trains on real all-weather only
+  LOAD:
+    GT:
+      POSE: False
+  # NOTE: student trains on REAL all-weather data only (no translation augmentation here);
+  # the synthetic-data benefit is injected via the strengthened weather-expert teachers below.
+TRAINING:
+  BATCH_SIZE: 16
+  SELF_DISTILL: True
+LOAD:
+  # Student depth/pose warm-start from md4allDD (strong, balanced on night+rain) instead of the
+  # plain md2 baseline -> faster convergence and a stronger starting point. Decoupled from the
+  # pseudo-label teachers below. Clean narrative: start from md4allDD, UAMTD pushes it further.
+  INIT_CHECKPOINT_PATH: 'log/checkpoints/md4allDDa_nuscenes.ckpt'
+  # (unused as student init now; only loads the single clear teacher_net, which UAMTD's teacher_num=2 path ignores)
+  DAYTIME_TRANSLATION_TEACHER_PATH: 'log/checkpoints/md2_nuscenes.ckpt'
+  # strengthened weather-expert teachers (trained with md4allDD init + synthetic data + uncertainty)
+  DAYTIME_TRANSLATION_TEACHER_PATHS:
+    - 'log/checkpoints/teacher-night-syn.ckpt'
+    - 'log/checkpoints/teacher-rain-syn.ckpt'
+LOSS:
+  SUPERVISED:
+    WEIGHT: 1.0
+    METHOD: 'unc_sim'
+    TEACHER_NUM: 2
+  VELOCITY_WEIGHT: 0.0
+SYSTEM:
+  NUM_WORKERS: 8

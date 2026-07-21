@@ -1,0 +1,38 @@
+EXPERIMENT_NAME: 'train-unc-distll-syn'
+
+SAVE:
+  TOP_K: -1
+DATASET:
+  # VERSION: 'mini'
+  DATAROOT: '../nuscenes'
+  LOAD:
+    GT:
+      POSE: False
+  AUGMENTATION:
+    GAUSSIAN_NOISE:
+      PROBABILITY: 0.5
+    NORMALIZE:
+      MODE: 'Daytime'
+    DAY_NIGHT_TRANSLATION:
+      PROBABILITY: 0.33
+    DAY_CLEAR_DAY_RAIN_TRANSLATION:
+      PROBABILITY: 0.5
+TRAINING:
+  BATCH_SIZE: 16
+  SELF_DISTILL: True
+  # REPEAT: 1
+  # EPOCHS: 40
+LOAD:
+  DAYTIME_TRANSLATION_TEACHER_PATH: 'log/checkpoints/md2_nuscenes.ckpt'
+  DAYTIME_TRANSLATION_TEACHER_PATHS:
+    - 'log/checkpoints/selfdistill-night.ckpt'
+    - 'log/checkpoints/selfdistill-rain.ckpt'
+  DAY_NIGHT_TRANSLATION_PATH: '../nuScenes_translated/night'
+  DAY_CLEAR_DAY_RAIN_TRANSLATION_PATH: '../nuScenes_translated/rain'
+LOSS:
+  SUPERVISED:
+    WEIGHT: 1.0
+    METHOD: 'unc_sim'
+  VELOCITY_WEIGHT: 0.0
+SYSTEM:
+  NUM_WORKERS: 8 #TODO add noise

@@ -1,0 +1,10 @@
+# RADIATE track — extras on top of the root uamtd_release environment.
+# (torch / torchvision / opencv / matplotlib / pandas / tensorboard are already
+#  provided by the root requirements.txt.)
+timm
+tensorboardX
+scikit-image
+imageio
+tqdm
+six
+Pillow
